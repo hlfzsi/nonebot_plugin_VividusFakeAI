@@ -1,0 +1,26 @@
+[project]
+name = "nonebot-plugin-vividusfakeai"
+version = "0.0.1"
+description = "模仿群友的聊天!"
+authors = [
+    {name = "hlfzsi"}
+]
+license = {text = "AGPL-3.0"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "datasketch (>=1.6.5)",
+    "jieba (>=0.42.1)",
+    "nonebot-plugin-localstore (>=0.7.3)",
+    "nonebot-plugin-vividuscore (>=0.0.1)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+priority = "primary"
