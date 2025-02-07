@@ -189,7 +189,7 @@ class DatabaseManager:
             )
             if cursor:
                 hash_values = json.loads(cursor[0][0])
-                minhash = MinHash(num_perm=Config.NUM_PERM)
+                minhash = MinHash(num_perm=_Config.NUM_PERM)
                 minhash.hashvalues = hash_values
                 return minhash
             return None
@@ -312,8 +312,8 @@ class QAManager:
         qa_pairs = await self.db.get_all_qa()
 
         # 批量处理
-        for i in range(0, len(qa_pairs), Config.BATCH_SIZE):
-            batch = qa_pairs[i:i+Config.BATCH_SIZE]
+        for i in range(0, len(qa_pairs), _Config.BATCH_SIZE):
+            batch = qa_pairs[i:i+_Config.BATCH_SIZE]
             tasks = []
             for qa in batch:
                 tasks.append(self._process_qa(qa))
@@ -386,13 +386,13 @@ class QAManager:
         Returns:
             随机选择的结果 (id, question, answer, image_folder)
         """
-        raw_results = await self._basic_search(query, group, top_n*3)  # 扩大候选池
+        raw_results = await self._basic_search(query, group, top_n*3)
 
         if not raw_results:
             return None
 
         scored = []
-        for qa_id, question, answer, image_folder, similarity in raw_results:  # 解包新增字段
+        for qa_id, question, answer, image_folder, similarity in raw_results:
             weight = await self.db.get_qa_weight(qa_id)
             score = (similarity ** similarity_weight) * \
                 (weight ** count_weight)
@@ -439,10 +439,8 @@ class QAManager:
         return results[:top_n]
 
 
-class Config:
+class _Config:
     NUM_PERM = 256
-    LSH_THRESHOLD = 0.6
-    CACHE_SIZE = 1000
     BATCH_SIZE = 500
 
 

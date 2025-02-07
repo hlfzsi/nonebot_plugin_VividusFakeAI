@@ -30,7 +30,9 @@ _✨ 模仿你的群友！ ✨_
 <summary>使用 nb-cli 安装</summary>
 在 nonebot2 项目的根目录下打开命令行, 输入以下指令即可安装
 
+```
 nb plugin install nonebot-plugin-VividusFakeAI
+```
 
 </details>
 
@@ -41,49 +43,59 @@ nb plugin install nonebot-plugin-VividusFakeAI
 <details>
 <summary>pip</summary>
 
+```
 pip install nonebot-plugin-VividusFakeAI
+```
 
 </details>
 <details>
 <summary>pdm</summary>
 
+```
 pdm add nonebot-plugin-VividusFakeAI
+```
 
 </details>
 <details>
 <summary>poetry</summary>
 
+```
 poetry add nonebot-plugin-VividusFakeAI
+```
 
 </details>
 <details>
 <summary>conda</summary>
 
+```
 conda install nonebot-plugin-VividusFakeAI
+```
 
 </details>
 
 打开 nonebot2 项目根目录下的 `pyproject.toml` 文件, 在 `[tool.nonebot]` 部分追加写入
 
+```
 plugins = ["nonebot_plugin_VividusFakeAI"]
+```
 
 </details>
 
 ## ⚙️ 配置
 
-暂无配置项
 
-
-| 配置项 | 必填 | 默认值 |   说明   |
-| :-----: | :--: | :----: | :------: |
-| 配置项1 |  是  |   无   | 配置说明 |
-| 配置项2 |  否  |   无   | 配置说明 |
+|    配置项    | 必填 | 默认值 |        说明        |
+| :-----------: | :--: | :----: | :----------------: |
+| checking_rate |  否  |  0.70  |     相似度阈值     |
+| sending_rate |  否  |  0.30  | 尝试获取回复的概率 |
 
 ## 🎉 使用
 
 ### 指令表
 
 暂无指令
+
+* [ ]  Plan：支持黑名单添加
 
 
 | 指令 | 权限 | 需要@ | 范围 |   说明   |

@@ -1,6 +1,6 @@
 [project]
 name = "nonebot-plugin-vividusfakeai"
-version = "0.0.1"
+version = "0.0.2"
 description = "模仿群友的聊天!"
 authors = [
     {name = "hlfzsi"}

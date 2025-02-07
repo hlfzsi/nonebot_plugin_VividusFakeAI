@@ -1,7 +1,10 @@
-from nonebot_plugin_ACMD import ACMD_get_driver,CommandFactory
-from nonebot.plugin import PluginMetadata
+from nonebot import require
+require("nonebot_plugin_ACMD")
+from nonebot_plugin_ACMD import ACMD_get_driver, CommandFactory  # noqa
+from nonebot.plugin import PluginMetadata  # noqa
 
-from .vivFakeAI_handler import VivFakeAI, QA
+from .config import Config  # noqa
+from .vivFakeAI_handler import VivFakeAI, QA  # noqa
 
 
 __plugin_meta__ = PluginMetadata(
@@ -10,6 +13,8 @@ __plugin_meta__ = PluginMetadata(
     usage="https://github.com/hlfzsi/nonebot_plugin_VividusFakeAI",
 
     type="application",
+
+    config=Config,
 
     homepage="https://github.com/hlfzsi/nonebot_plugin_VividusFakeAI",
 
@@ -23,9 +28,9 @@ driver = ACMD_get_driver()
 @driver.on_startup
 async def hello():
     await QA.initialize()
-    
-    
-CommandFactory.create_command(commands=None,handler_list=VivFakeAI())
+
+
+CommandFactory.create_command(commands=None, handler_list=VivFakeAI())
 
 
 @driver.on_shutdown

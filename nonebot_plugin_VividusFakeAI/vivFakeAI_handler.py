@@ -1,4 +1,5 @@
 import os
+import random
 from datetime import datetime
 from typing import Final
 
@@ -9,12 +10,13 @@ from nonebot_plugin_ACMD.Atypes import UserInput, GroupID, ImageInput, PIN
 from nonebot_plugin_VividusCore.perm import VivPermission
 
 from .learn import QAManager
+from .config import config_
 
 require("nonebot_plugin_localstore")
 from nonebot_plugin_localstore import get_data_dir  # noqa
 
 QA: Final[QAManager] = QAManager(
-    db_path=os.path.join(str(get_data_dir("nonebot_plugin_VividusFakeAI")), "QA.db3"))
+    db_path=os.path.join(str(get_data_dir("nonebot_plugin_VividusFakeAI")), "QA.db3"), threshold=config_.checking_rate)
 IMAGEDIR: Final[str] = os.path.join(
     str(get_data_dir("nonebot_plugin_VividusFakeAI")), 'Image')
 os.makedirs(IMAGEDIR, exist_ok=True)
@@ -29,7 +31,7 @@ class VivFakeAI(BasicHandler):
         self.question = {}
 
     async def should_handle(self, msg: UserInput, permission: VivPermission):
-        return permission.has_permission(None) and not msg.full.startswith(('/', '-', '*')) and not msg.cmd
+        return permission.has_permission(None) and not msg.full.startswith(('/', '-', '*')) and not msg.cmd and random.random() <= config_.sending_rate
 
     async def handle(self, bot: Bot, event: MessageEvent, msg: UserInput, groupid: GroupID, image: ImageInput, PIN: PIN):
         result = await QA.search(msg.full, groupid.str)
@@ -48,7 +50,7 @@ class VivFakeAI(BasicHandler):
                 IMAGEDIR, f'{int(datetime.now().timestamp()*(10**6))}_{groupid.str}_{PIN.user}')
             await image.download(target_folder=target_folder)
 
-        if not self.question.get(groupid.str,None):
+        if not self.question.get(groupid.str, None):
             self.question[groupid.str] = msg.full
             logger.info(f'已记录问题 {msg.full}')
             return
@@ -59,7 +61,8 @@ class VivFakeAI(BasicHandler):
 
         self.question[groupid.str] = msg.full
 
-        logger.info(f'已记录在 {groupid.str} 的问答对 {self.question[groupid.str]} -> {msg.full}')
+        logger.info(f'已记录在 {groupid.str} 的问答对 {
+                    self.question[groupid.str]} -> {msg.full} {image.image_list if image.image_list else ''}')
 
     @staticmethod
     def get_image_paths(directory):
