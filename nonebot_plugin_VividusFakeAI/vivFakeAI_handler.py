@@ -24,25 +24,38 @@ os.makedirs(IMAGEDIR, exist_ok=True)
 
 class VivFakeAI(BasicHandler):
     __slots__ = [slot for slot in BasicHandler.__slots__ if slot !=
-                 '__weakref__']+['question']
+                 '__weakref__']+['question', 'should_skip']
 
     def __init__(self, block=True, unique=None, **kwargs):
         super().__init__(block, unique, **kwargs)
         self.question = {}
+        self.should_skip = {}
 
-    async def should_handle(self, msg: UserInput, permission: VivPermission):
-        return permission.has_permission(None) and not msg.full.startswith(('/', '-', '*')) and not msg.cmd and random.random() <= config_.sending_rate
+    async def should_handle(self, msg: UserInput, groupid: GroupID, permission: VivPermission):
+        skip_key = groupid.str
+        if not permission.has_permission(None):
+            return False
+
+        if self.should_skip.get(skip_key, False):
+            self.should_skip[skip_key] = False
+
+            if msg.cmd or msg.full.startswith(('/', '-', '*')):
+                self.should_skip[skip_key] = True
+            return False
+
+        return True
 
     async def handle(self, bot: Bot, event: MessageEvent, msg: UserInput, groupid: GroupID, image: ImageInput, PIN: PIN):
-        result = await QA.search(msg.full, groupid.str)
+        if random.random() <= config_.sending_rate:
+            result = await QA.search(msg.full, groupid.str)
 
-        if result:
-            msg_to_send = Message()
-            msg_to_send += MessageSegment.text(result[2])
-            paths = self.get_image_paths(result[3])
-            for path in paths:
-                msg_to_send += MessageSegment.image(f"file:///{path}")
-            await bot.send(event, msg_to_send)
+            if result:
+                msg_to_send = Message()
+                msg_to_send += MessageSegment.text(result[2])
+                paths = self.get_image_paths(result[3])
+                for path in paths:
+                    msg_to_send += MessageSegment.image(f"file:///{path}")
+                await bot.send(event, msg_to_send)
 
         target_folder = None
         if image.image_list:
