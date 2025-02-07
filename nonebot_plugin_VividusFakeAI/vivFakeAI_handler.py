@@ -30,6 +30,7 @@ class VivFakeAI(BasicHandler):
         super().__init__(block, unique, **kwargs)
         self.question = {}
         self.should_skip = {}
+        self.last_send = {}
 
     async def should_handle(self, msg: UserInput, groupid: GroupID, permission: VivPermission):
         skip_key = groupid.str
@@ -50,6 +51,11 @@ class VivFakeAI(BasicHandler):
             result = await QA.search(msg.full, groupid.str)
 
             if result:
+                if self.last_send.get(groupid.str, None) == result:
+                    return
+                else:
+                    self.last_send[groupid.str] = result
+
                 msg_to_send = Message()
                 msg_to_send += MessageSegment.text(result[2])
                 paths = self.get_image_paths(result[3])
