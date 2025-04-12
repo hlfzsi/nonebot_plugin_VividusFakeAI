@@ -24,7 +24,7 @@ os.makedirs(IMAGEDIR, exist_ok=True)
 
 class VivFakeAI(BasicHandler):
     __slots__ = [slot for slot in BasicHandler.__slots__ if slot !=
-                 '__weakref__']+['question', 'should_skip']
+                 '__weakref__']+['question', 'should_skip','last_send']
 
     def __init__(self, block=True, unique=None, **kwargs):
         super().__init__(block, unique, **kwargs)
